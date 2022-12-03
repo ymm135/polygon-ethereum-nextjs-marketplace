@@ -4,7 +4,7 @@ import { create as ipfsHttpClient } from 'ipfs-http-client'
 import { useRouter } from 'next/router'
 import Web3Modal from 'web3modal'
 
-const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
+const client = ipfsHttpClient('http://localhost:5001/')
 
 import {
   marketplaceAddress
@@ -26,7 +26,7 @@ export default function CreateItem() {
           progress: (prog) => console.log(`received: ${prog}`)
         }
       )
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      const url = `http://localhost:8080/ipfs/${added.path}`
       setFileUrl(url)
     } catch (error) {
       console.log('Error uploading file: ', error)
@@ -41,7 +41,7 @@ export default function CreateItem() {
     })
     try {
       const added = await client.add(data)
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      const url = `http://localhost:8080/ipfs/${added.path}`
       /* after file is uploaded to IPFS, return the URL to use it in the transaction */
       return url
     } catch (error) {
@@ -60,7 +60,10 @@ export default function CreateItem() {
     const price = ethers.utils.parseUnits(formInput.price, 'ether')
     let contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
     let listingPrice = await contract.getListingPrice()
+
     listingPrice = listingPrice.toString()
+
+    console.log("createToken:" + url)
     let transaction = await contract.createToken(url, price, { value: listingPrice })
     await transaction.wait()
    

@@ -1,4 +1,19 @@
-## Full stack NFT marketplace built with Polygon, Solidity, IPFS, & Next.js
+- ## Full stack NFT marketplace built with Polygon, Solidity, IPFS, & Next.js
+
+- [Running this project](#running-this-project)
+  - [Gitpod](#gitpod)
+  - [Local setup](#local-setup)
+- [Configuration](#configuration)
+- [问题](#问题)
+- [HardHat使用](#hardhat使用)
+  - [Hardhat for Visual Studio Code](#hardhat-for-visual-studio-code)
+  - [next.js vscode debug](#nextjs-vscode-debug)
+- [环境准备](#环境准备)
+  - [更新IPFS为本地](#更新ipfs为本地)
+- [Failed to start the JavaScript console: api modules: Method rpc\_modules not found](#failed-to-start-the-javascript-console-api-modules-method-rpc_modules-not-found)
+- [从`Ganache`导入用户到MataMask](#从ganache导入用户到matamask)
+- [fetchMarketItems() 报错](#fetchmarketitems-报错)
+
 
 ![Header](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pfofv47dooojerkmfgr4.png)
 
@@ -190,6 +205,15 @@ Compiled 1 Solidity file successfully
   ]
 }
 ```
+### IPFS环境搭建
+[js 环境搭建](https://github.com/ipfs/js-ipfs/tree/master/packages/ipfs-http-client#install) 
+
+#### demo测试
+[demo地址](https://github.com/status-im/liquid-funding/blob/a0223d6adee4467470f4b3b6589b3c5784d33440/src/utils/ipfs.js#L9)  
+```
+
+```
+
 ### 环境准备
 
 测试用例
@@ -229,10 +253,10 @@ items:  [
 +const client = ipfsHttpClient('http://localhost:5001/')
 
 -      const url = `https://ipfs.infura.io/ipfs/${added.path}`
-+      const url = `https://ipfs.io/ipfs/${added.path}`
++      const url = `http://localhost:8080/ipfs/${added.path}`
 
 -      const url = `https://ipfs.infura.io/ipfs/${added.path}`
-+      const url = `https://ipfs.io/ipfs/${added.path}`
++      const url = `http://localhost:8080/ipfs/${added.path}`
 ```
 
 资源路径:
@@ -259,6 +283,30 @@ at block: 17 (Wed Aug 31 2022 19:19:46 GMT+0800 (CST))
 
 To exit, press ctrl-d or type exit
 ```
+
+## js问题
+async表示函数里有异步操作，await表示紧跟在后面的表达式需要等待结果。需要注意的是await关键字只在async函数内有效，如果在async函数体之外使用它，会抛出语法错误。  
+
+ async函数返回一个 `Promise`对象，可以使用then方法添加回调函数。只要使用async，不管函数内部返回的是不是Promise对象，都会被包装成Promise对象。  
+
+```js
+async function testAsync() {
+    return "hello async";
+}
+
+const result = testAsync();
+console.log(result);
+```
+
+返回的结果
+```sh
+Promise {<fulfilled>: 'hello async'}
+[[Prototype]]: Promise
+[[PromiseState]]: "fulfilled"
+[[PromiseResult]]: "hello async"
+```
+
+
 
 ### 从`Ganache`导入用户到MataMask 
 在`MetaMask`通过用`Ganache`用户的私钥，导入用户
@@ -331,89 +379,9 @@ import Web3Modal from 'web3modal'
 const client = ipfsHttpClient('http://localhost:5001')
 ```
 
-返回的错误
-```sh
-Unhandled Runtime Error
-TypeError: debug__default.default is not a function
+最后发现是依赖库的问题，因为我单独执行了`npm instal --save ipfs-http-client`, 版本已经升级到`56.0.3`, 已经不是`56.0.1`  
 
-Call Stack
-eval
-node_modules/ipfs-http-client/cjs/src/lib/core.js (22:0)
-./node_modules/ipfs-http-client/cjs/src/lib/core.js
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/pages/create-nft.js (2945:1)
-options.factory
-/_next/static/chunks/webpack.js (680:31)
-__webpack_require__
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/webpack.js (37:33)
-fn
-/_next/static/chunks/webpack.js (358:21)
-eval
-node_modules/ipfs-http-client/cjs/src/lib/configure.js (5:11)
-./node_modules/ipfs-http-client/cjs/src/lib/configure.js
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/pages/create-nft.js (2934:1)
-options.factory
-/_next/static/chunks/webpack.js (680:31)
-__webpack_require__
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/webpack.js (37:33)
-fn
-/_next/static/chunks/webpack.js (358:21)
-eval
-node_modules/ipfs-http-client/cjs/src/bitswap/wantlist.js (6:16)
-./node_modules/ipfs-http-client/cjs/src/bitswap/wantlist.js
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/pages/create-nft.js (2186:1)
-options.factory
-/_next/static/chunks/webpack.js (680:31)
-__webpack_require__
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/webpack.js (37:33)
-fn
-/_next/static/chunks/webpack.js (358:21)
-eval
-node_modules/ipfs-http-client/cjs/src/bitswap/index.js (5:15)
-./node_modules/ipfs-http-client/cjs/src/bitswap/index.js
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/pages/create-nft.js (2142:1)
-options.factory
-/_next/static/chunks/webpack.js (680:31)
-__webpack_require__
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/webpack.js (37:33)
-fn
-/_next/static/chunks/webpack.js (358:21)
-eval
-node_modules/ipfs-http-client/cjs/src/index.js (14:12)
-./node_modules/ipfs-http-client/cjs/src/index.js
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/pages/create-nft.js (2813:1)
-options.factory
-/_next/static/chunks/webpack.js (680:31)
-__webpack_require__
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/webpack.js (37:33)
-fn
-/_next/static/chunks/webpack.js (358:21)
-eval
-webpack-internal:///./node_modules/ipfs-http-client/esm/src/index.js (13:70)
-./node_modules/ipfs-http-client/esm/src/index.js
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/pages/create-nft.js (4474:1)
-options.factory
-/_next/static/chunks/webpack.js (680:31)
-__webpack_require__
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/webpack.js (37:33)
-fn
-/_next/static/chunks/webpack.js (358:21)
-eval
-webpack-internal:///./pages/create-nft.js (14:74)
-./pages/create-nft.js
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/pages/create-nft.js (1706:1)
-options.factory
-/_next/static/chunks/webpack.js (680:31)
-__webpack_require__
-file:///Users/ymm/work/mygithub/polygon-ethereum-nextjs-marketplace/.next/static/chunks/webpack.js (37:33)
-fn
-/_next/static/chunks/webpack.js (358:21)
-eval
-node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fcreate-nft&absolutePagePath=%2FUsers%2Fymm%2Fwork%2Fmygithub%2Fpolygon-ethereum-nextjs-marketplace%2Fpages%2Fcreate-nft.js! (5:15)
-eval
-node_modules/next/dist/client/route-loader.js (29:582)
-```
-
-
+> 无论什么脚手架，版本号都是要匹配的，如果使用最新版本或者不是发布的版本，可能导致各种异常  
 
 
 
